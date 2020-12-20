@@ -1,0 +1,55 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#header p {
+    font-size: larger;
+    font-weight: lighter;
+    text-align: center;
+    padding: 7px;
+}
+
+#main {
+    width: 100vw;
+}
+
+#interface {
+    display: flex;
+    height: auto;
+}
+
+#separateInput {
+    width: 100%;
+    margin: 0 auto;
+}
+
+#form {
+    width: 50%;
+    margin: 0 auto;
+}
+
+#table {
+    box-sizing: border-box;
+    width: 80%;
+    margin: 20px 70px;
+    vertical-align: top;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+#table td {
+    text-align: center;
+    width: 20%;
+}
+
+@media screen and (max-width: 1280px) {
+    #interface {
+        display: block;
+    }
+
+    #separateInput {
+        width: 100%;
+    }
+
+}

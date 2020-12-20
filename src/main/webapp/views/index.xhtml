@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:outputScript library="js" name="script.js" />
+<h:outputStylesheet library="css" name="style.css" />
+<h:outputScript library="primefaces" name="jquery/jquery.js" />
+
+<h:head>
+
+    <title>Пример</title>
+</h:head>
+
+<h:body>
+    <div id="header">
+        <p>Лившиц Виктор Алексеевич P3232
+            3 Лаба №2819</p>
+    </div>
+    <div id="main">
+        <div id="interface">
+            <div id="canvas">
+                <canvas width="800px" height="400px" id="graphicCanvas" />
+            </div>
+            <div id="separateInput">
+                <h:form id="form">
+                    <!--                <div>-->
+                    <!--                    <p:outputLabel/>-->
+                    <!--                    <h:commandButton  value="-4"/>-->
+                    <!--                    <h:commandButton  value="-3"/>-->
+                    <!--                    <h:commandButton  value="-2"/>-->
+                    <!--                    <h:commandButton  value="-1"/>-->
+                    <!--                    <h:commandButton  value="0"/>-->
+                    <!--                    <h:commandButton  value="1"/>-->
+                    <!--                    <h:commandButton  value="2"/>-->
+                    <!--                    <h:commandButton  value="3"/>-->
+                    <!--                    <h:commandButton  value="4"/>-->
+                    <!--                </div>-->
+                    <div>
+                        <h:outputLabel id="x_label" value="X:"/>
+                        <p:inputNumber id="x" value="#{nodeBean.node.x}" required="true"
+                                       placeholder="-5...3" >
+                        </p:inputNumber>
+                    </div>
+
+                    <div>
+                        <h:outputLabel id="y_label" value="Y:"/>
+                        <p:inputNumber id="y" value="#{nodeBean.node.y}" required="true"
+                                       placeholder="-5...3" >
+                            <f:validateDoubleRange minimum="-3" maximum="5" />
+                        </p:inputNumber>
+                    </div>
+
+<!--                    <div>-->
+<!--                        <p:inputNumber id="r" value="#{nodeBean.node.r}" required="true"-->
+<!--                                       placeholder="-5...3" >-->
+<!--                            <f:validateDoubleRange minimum="-3" maximum="5" />-->
+<!--                        </p:inputNumber>-->
+<!--                    </div>-->
+
+                    <div>
+                        <h:outputLabel id="r_label" for="r" value="R:" />
+                        <h:inputHidden id="r" value="#{nodeBean.node.r}" required="true" >
+                            <f:validateLongRange minimum="1" maximum="5" />
+                        </h:inputHidden>
+                        <div id="r_options">
+                            <p:commandLink onclick="changeR(this)" value="1" />
+                            <p:commandLink onclick="changeR(this)" value="2" />
+                            <p:commandLink onclick="changeR(this)" value="3" />
+                            <p:commandLink onclick="changeR(this)" value="4" />
+                            <p:commandLink onclick="changeR(this)" value="5" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <h:commandButton id="submitButton" value="Add" action="#{nodeBean.addNode()}">
+                            <f:ajax execute="form" render="table" />
+                        </h:commandButton>
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+            <h:dataTable id="table" value="#{nodeBean.nodes}" var="node">
+                <h:column>
+                    <f:facet name="header">X</f:facet>
+                    <h:outputText value="#{node.x}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Y</f:facet>
+                    <h:outputText value="#{node.y}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">R</f:facet>
+                    <h:outputText value="#{node.r}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Result</f:facet>
+                    <h:outputText value="#{node.result}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Time</f:facet>
+                    <h:outputText value="#{node.createTimeFormatted()}" />
+                </h:column>
+            </h:dataTable>
+    </div>
+
+
+</h:body>
+
+
+</html>
