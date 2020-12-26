@@ -1,3 +1,5 @@
+package com.example.lab3.Models;
+
 import com.example.lab3.Models.Node;
 
 import javax.annotation.ManagedBean;
@@ -7,40 +9,39 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@ManagedBean()
+@ManagedBean
 @Named("nodeBean")
 @SessionScoped
 public class NodeBean implements Serializable {
 
+    private NodeDAO nodeDAO;
 
-//    @ManagedProperty(value = "#{nodeJPA")
-    private NodeJPA nodeJPA;
     private List<Node> nodes;
     private Node node;
 
     public NodeBean() {
+        this.nodeDAO = new NodeDAO();
         this.nodes = new ArrayList<>();
         this.node = new Node();
     }
 
     public List<Node> getSavedNodes() {
-        //nodes = nodeJPA.getPoints();
+        nodes = nodeDAO.getNodes();
         return nodes;
     }
 
     public void addNode() {
         node.checkResult();
-        nodes.add(node);
-        //nodeJPA.addPoint();
+        nodeDAO.addNode(node);
         node = new Node();
     }
 
-    public NodeJPA getNodeJPA() {
-        return nodeJPA;
+    public NodeDAO getNodeJPA() {
+        return nodeDAO;
     }
 
-    public void setNodeJPA(NodeJPA nodeJPA) {
-        this.nodeJPA = nodeJPA;
+    public void setNodeJPA(NodeDAO nodeDAO) {
+        this.nodeDAO = nodeDAO;
     }
 
     public List<Node> getNodes() {

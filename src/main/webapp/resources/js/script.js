@@ -1,7 +1,7 @@
 function drawBase() {
     let canvas = document.getElementById('graphicCanvas');
     let ctx = canvas.getContext('2d');
-    let width = canvas.width;
+        let width = canvas.width;
     let height = canvas.height;
     let centerX = width / 2;
     let centerY = height / 2;
@@ -80,10 +80,25 @@ function putADot(x, y) {
     const canvas = $("#graphicCanvas")[0];
     const rect = canvas.getBoundingClientRect();
     let ctx = canvas.getContext('2d');
+
+    const width = rect.right - rect.left;
+    const height = rect.bottom - rect.top;
+    let r = $("#form")[0].elements["form:r"].value;
+    let actualX = r * (x - rect.left - width / 2) / (height / 3);
+    let actualY = -r * (y - rect.top - height / 2) / (height / 3);
+    ctx.fillStyle = checkIfHit(actualX, actualY, r);
     ctx.beginPath();
     ctx.moveTo(x - rect.left, y - rect.top);
     ctx.arc(x - rect.left, y - rect.top, 5, 0, Math.PI*2, true);
     ctx.fill();
+}
+
+function checkIfHit(x, y, r) {
+
+    let result = x <= 0 && x >= -r && y <= 0 && y >= -r ||
+        x >= 0 && y <= 0 && x*x + y*y <= r*r/4 ||
+        x <= 0 && y >= 0 && y <= r/2 + x/2 && x >= -r && y <= r/2;
+    return result ? 'green' : 'black';
 }
 
 function sendThisShit(e) {
@@ -100,6 +115,9 @@ function sendThisShit(e) {
 }
 
 function changeR(selectedR) {
-    $("#form")[0].elements["form:r"].value = selectedR.textContent;
+    selectedR
+    const form = $("#form")[0];
+    form.elements["form:r"].value = selectedR.textContent;
+    form.elements["form:submitButton"].click();
 }
 

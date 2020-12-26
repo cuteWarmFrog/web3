@@ -1,17 +1,15 @@
-import com.example.lab3.Models.Node;
+package com.example.lab3.Models;
 
-import javax.enterprise.context.SessionScoped;
-import javax.faces.bean.ManagedBean;
-import javax.inject.Named;
+import com.example.lab3.Models.Node;
 import java.io.Serializable;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeJPA implements Serializable {
+public class NodeDAO implements Serializable {
 
-    public NodeJPA() {}
+    public NodeDAO() {}
 
 
     public void addNode(Node node) {
@@ -65,9 +63,12 @@ public class NodeJPA implements Serializable {
 
     public Connection getConnection() {
         Connection con = null;
-        String url = "jdbc:postgresql://localhost/testdb";
-        String user = "user1";
-        String password = "user1";
+//        String url = "jdbc:postgresql://localhost/testdb";
+//        String user = "user1";
+//        String password = "user1";
+        String url = "jdbc:postgresql://pg:5432/studs";
+        String user = "s278069";
+        String password = "keq816";
 
         try {
             Class.forName("org.postgresql.Driver");

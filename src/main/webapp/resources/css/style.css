@@ -29,6 +29,11 @@
     margin: 0 auto;
 }
 
+.ui-widget {
+    margin: 5px;
+    text-decoration: none;
+}
+
 #table {
     box-sizing: border-box;
     width: 80%;

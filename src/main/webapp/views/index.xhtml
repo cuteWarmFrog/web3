@@ -28,18 +28,6 @@
             </div>
             <div id="separateInput">
                 <h:form id="form">
-                    <!--                <div>-->
-                    <!--                    <p:outputLabel/>-->
-                    <!--                    <h:commandButton  value="-4"/>-->
-                    <!--                    <h:commandButton  value="-3"/>-->
-                    <!--                    <h:commandButton  value="-2"/>-->
-                    <!--                    <h:commandButton  value="-1"/>-->
-                    <!--                    <h:commandButton  value="0"/>-->
-                    <!--                    <h:commandButton  value="1"/>-->
-                    <!--                    <h:commandButton  value="2"/>-->
-                    <!--                    <h:commandButton  value="3"/>-->
-                    <!--                    <h:commandButton  value="4"/>-->
-                    <!--                </div>-->
                     <div>
                         <h:outputLabel id="x_label" value="X:"/>
                         <p:inputNumber id="x" value="#{nodeBean.node.x}" required="true"
@@ -54,13 +42,6 @@
                             <f:validateDoubleRange minimum="-3" maximum="5" />
                         </p:inputNumber>
                     </div>
-
-<!--                    <div>-->
-<!--                        <p:inputNumber id="r" value="#{nodeBean.node.r}" required="true"-->
-<!--                                       placeholder="-5...3" >-->
-<!--                            <f:validateDoubleRange minimum="-3" maximum="5" />-->
-<!--                        </p:inputNumber>-->
-<!--                    </div>-->
 
                     <div>
                         <h:outputLabel id="r_label" for="r" value="R:" />
@@ -85,7 +66,7 @@
                 </h:form>
             </div>
         </div>
-            <h:dataTable id="table" value="#{nodeBean.nodes}" var="node">
+            <h:dataTable id="table" value="#{nodeBean.savedNodes}" var="node">
                 <h:column>
                     <f:facet name="header">X</f:facet>
                     <h:outputText value="#{node.x}" />
@@ -104,13 +85,11 @@
                 </h:column>
                 <h:column>
                     <f:facet name="header">Time</f:facet>
-                    <h:outputText value="#{node.createTimeFormatted()}" />
+                    <h:outputText value="#{node.createTimeFormatted}" />
                 </h:column>
             </h:dataTable>
     </div>
 
-
 </h:body>
-
 
 </html>

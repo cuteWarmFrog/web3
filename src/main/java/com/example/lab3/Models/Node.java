@@ -1,16 +1,12 @@
 package com.example.lab3.Models;
 
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ThreadLocalRandom;
 
-@Entity
 public class Node implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private Double x;
     private Double y;
@@ -19,6 +15,7 @@ public class Node implements Serializable {
     private LocalDateTime createTime;
 
     public Node() {
+        this.id = ThreadLocalRandom.current().nextInt(1, 10000);
         this.createTime = LocalDateTime.now();
     }
 
