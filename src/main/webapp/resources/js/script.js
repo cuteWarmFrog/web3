@@ -115,7 +115,6 @@ function sendThisShit(e) {
 }
 
 function changeR(selectedR) {
-    selectedR
     const form = $("#form")[0];
     form.elements["form:r"].value = selectedR.textContent;
     form.elements["form:submitButton"].click();

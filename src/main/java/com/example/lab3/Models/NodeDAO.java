@@ -11,24 +11,22 @@ public class NodeDAO implements Serializable {
 
     public NodeDAO() {}
 
-
     public void addNode(Node node) {
-        StringBuilder query = new StringBuilder("INSERT INTO \"nodes\" VALUES(");
-        query.append(node.getId()).append(",");
-        query.append(node.getX()).append(",");
-        query.append(node.getY()).append(",");
-        query.append(node.getR()).append(",");
-        query.append(node.getResult()).append(",");
-        query.append("'").append(node.getCreateTime()).append("');");
-
-        PreparedStatement pst;
         Connection connection = getConnection();
         try {
-            pst = connection.prepareStatement(query.toString());
+            PreparedStatement pst = connection.prepareStatement("INSERT INTO \"nodes\"" +
+                    " VALUES(?, ?, ?, ?, ?, ?);");
+
+            pst.setInt(1, node.getId());
+            pst.setDouble(2, node.getX());
+            pst.setDouble(3, node.getY());
+            pst.setDouble(4, node.getR());
+            pst.setBoolean(5, node.getResult());
+            pst.setString(6, node.getCreateTime().toString());
             pst.execute();
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -62,13 +60,22 @@ public class NodeDAO implements Serializable {
     }
 
     public Connection getConnection() {
+        boolean isLocal = true;
         Connection con = null;
-//        String url = "jdbc:postgresql://localhost/testdb";
-//        String user = "user1";
-//        String password = "user1";
-        String url = "jdbc:postgresql://pg:5432/studs";
-        String user = "s278069";
-        String password = "keq816";
+
+        String url;
+        String user;
+        String password;
+
+        if(isLocal) {
+            url = "jdbc:postgresql://localhost/testdb";
+            user = "user1";
+            password = "user1";
+        } else {
+            url = "jdbc:postgresql://pg:5432/studs";
+            user = "s278069";
+            password = "keq816";
+        }
 
         try {
             Class.forName("org.postgresql.Driver");

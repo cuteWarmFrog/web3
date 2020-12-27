@@ -1,7 +1,5 @@
 package com.example.lab3.Models;
 
-import com.example.lab3.Models.Node;
-
 import javax.annotation.ManagedBean;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
