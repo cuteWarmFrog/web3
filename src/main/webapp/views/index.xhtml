@@ -7,7 +7,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-<h:outputScript library="js" name="script.js" />
+
 <h:outputStylesheet library="css" name="style.css" />
 <h:outputScript library="primefaces" name="jquery/jquery.js" />
 
@@ -31,14 +31,15 @@
                     <div>
                         <h:outputLabel id="x_label" value="X:"/>
                         <p:inputNumber id="x" value="#{nodeBean.node.x}" required="true"
-                                       placeholder="-5...3" >
+                                       placeholder="-4...4" >
+                            <f:validateDoubleRange minimum="-4" maximum="4" />
                         </p:inputNumber>
                     </div>
 
                     <div>
                         <h:outputLabel id="y_label" value="Y:"/>
                         <p:inputNumber id="y" value="#{nodeBean.node.y}" required="true"
-                                       placeholder="-5...3" >
+                                       placeholder="-3...5" >
                             <f:validateDoubleRange minimum="-3" maximum="5" />
                         </p:inputNumber>
                     </div>
@@ -91,5 +92,5 @@
     </div>
 
 </h:body>
-
+<h:outputScript library="js" name="script.js" />
 </html>

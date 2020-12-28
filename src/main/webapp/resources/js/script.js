@@ -1,7 +1,21 @@
+const canvas = $("#graphicCanvas")[0];
+const rect = canvas.getBoundingClientRect();
+const form = $("#form")[0];
+const width = rect.right - rect.left;
+const height = rect.bottom - rect.top;
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('graphicCanvas').addEventListener('click', (e) => {
+        processCanvasClick(e);
+    })
+    //default value
+    form.elements["form:r"].value = 3;
+    drawBase();
+})
+
 function drawBase() {
-    let canvas = document.getElementById('graphicCanvas');
     let ctx = canvas.getContext('2d');
-        let width = canvas.width;
+    let width = canvas.width;
     let height = canvas.height;
     let centerX = width / 2;
     let centerY = height / 2;
@@ -60,36 +74,135 @@ function drawBase() {
     ctx.lineTo(centerX + 10, 10);
     ctx.closePath();
     ctx.fill();
+
+    drawDots();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('graphicCanvas').addEventListener('click', (e) => {
-        processClickInput(e);
+function drawDots() {
+    let dots = getDots();
+    dots.map(dot => drawDot(dot));
+}
+
+function getDots() {
+    let dots = [];
+    let tableRows = document.querySelectorAll("tbody tr")
+    tableRows.forEach(tr => {
+        let td = tr.children;
+        let x = td[0].textContent;
+        let y = td[1].textContent;
+        let r = td[2].textContent;
+        let result = td[3].textContent;
+        dots.push({x: x, y: y, r: r, result: result});
     })
-    drawBase();
+    return dots;
+}
+
+
+document.getElementById("form:submitButton").addEventListener("click", e => {
+    let x = form.elements["form:x_hinput"].value;
+    let y = form.elements["form:y_hinput"].value;
+    let r = form.elements["form:r"].value;
+    if(checkXY(x, y)) {
+        drawDot(makeDot(x, y, r));
+        recoverAlertLabels();
+    }
 })
 
-function processClickInput(e) {
-        drawBase();
-        putADot(e.clientX, e.clientY);
-        sendThisShit(e)
+form.elements["form:submitButton"].click(function () {
+    let x = form.elements["form:x_hinput"].value;
+    let y = form.elements["form:y_hinput"].value;
+    let r = form.elements["form:r"].value;
+    if(checkXY(x, y)) {
+        drawDot(makeDot(x, y, r));
+        recoverAlertLabels();
+    }
+})
+
+function processCanvasClick(e) {
+    let r =  form.elements["form:r"].value;
+    let humanX = getHumanXFromPhysical(e.clientX);
+    let humanY = getHumanYFromPhysical(e.clientY);
+    if(checkXY(humanX, humanY)) {
+        sendThisShit(humanX, humanY);
+        drawDot(makeDot(humanX, humanY, r));
+        recoverAlertLabels();
+    } else {
+
+    }
+}
+
+function getHumanXFromPhysical(clientX) {
+    let r = form.elements["form:r"].value;
+    return r * (clientX - rect.left - width / 2) / (height / 3);
+}
+
+function getHumanYFromPhysical(clientY) {
+    let r = form.elements["form:r"].value;
+    return -r * (clientY - rect.top - height / 2) / (height / 3);
+}
+
+function checkXY(actualX, actualY) {
+    let isODZOk = true;
+
+    if(actualX < -4 || actualX > 4 || actualX === "") {
+        isODZOk = false;
+        makeLabelAlert("X")
+    }
+
+    if(actualY < -3 || actualY > 5 || actualY === "") {
+        isODZOk = false;
+        makeLabelAlert("Y")
+    }
+
+    return isODZOk;
+}
+
+function drawDot(dot) {
+    let ctx = canvas.getContext('2d');
+
+    let r = form.elements["form:r"].value;
+    dot.x = dot.x * (dot.r / r)
+    dot.y = dot.y * (dot.r / r);
+    let drawableX = (dot.x * height / 3 + r * rect.left + r * width / 2) / r;
+    let drawableY = rect.bottom + rect.top - (dot.y * height / 3 + r * rect.top + r * height / 2) / r;
+
+    ctx.fillStyle = dot.result == "true" ? "green" : "black";
+    ctx.beginPath();
+    ctx.arc(drawableX - rect.left, drawableY - rect.top, 5, 0, Math.PI*2, true);
+    ctx.fill();
+}
+
+function makeDot(humanX, humanY, r) {
+    let isHit = checkIfHit(humanX, humanY, r);
+    return {x: humanX, y: humanY, r: r, result: isHit};
 }
 
 
-function putADot(x, y) {
-    const canvas = $("#graphicCanvas")[0];
-    const rect = canvas.getBoundingClientRect();
+
+function makeLabelAlert(XorY) {
+    if(XorY === "X") {
+        $("#form\\:x_label")[0].innerText = "X must be between -4 and 4";
+    } else {
+        $("#form\\:y_label")[0].innerText = "Y must be between -3 and 5";
+    }
+}
+
+function recoverAlertLabels() {
+    $("#form\\:x_label")[0].innerText = "X";
+    $("#form\\:y_label")[0].innerText = "Y";
+}
+
+
+
+function putADot(clientX, clientY) {
     let ctx = canvas.getContext('2d');
 
-    const width = rect.right - rect.left;
-    const height = rect.bottom - rect.top;
-    let r = $("#form")[0].elements["form:r"].value;
-    let actualX = r * (x - rect.left - width / 2) / (height / 3);
-    let actualY = -r * (y - rect.top - height / 2) / (height / 3);
+    let actualX = getHumanXFromPhysical(clientX);
+    let actualY = getHumanYFromPhysical(clientY);
     ctx.fillStyle = checkIfHit(actualX, actualY, r);
+
     ctx.beginPath();
-    ctx.moveTo(x - rect.left, y - rect.top);
-    ctx.arc(x - rect.left, y - rect.top, 5, 0, Math.PI*2, true);
+    ctx.arc(clientX - rect.left, clientY - rect.top, 5, 0, Math.PI*2, true);
     ctx.fill();
 }
 
@@ -97,26 +210,19 @@ function checkIfHit(x, y, r) {
 
     let result = x <= 0 && x >= -r && y <= 0 && y >= -r ||
         x >= 0 && y <= 0 && x*x + y*y <= r*r/4 ||
-        x <= 0 && y >= 0 && y <= r/2 + x/2 && x >= -r && y <= r/2;
-    return result ? 'green' : 'black';
+        x <= 0 && y >= 0 && y <= r/2 + x/2 && x >= -r && y <= r/2
+    return String(result);
 }
 
-function sendThisShit(e) {
-    const form = $("#form")[0];
-    const rect = $("#graphicCanvas")[0].getBoundingClientRect();
-    let r = form.elements["form:r"].value;
-    const width = rect.right - rect.left;
-    const height = rect.bottom - rect.top;
-    let x = r * (e.clientX - rect.left - width / 2) / (height / 3);
-    let y = -r * (e.clientY - rect.top - height / 2) / (height / 3);
-    form.elements["form:x_hinput"].value = x.toFixed(2);
-    form.elements["form:y_hinput"].value = y.toFixed(2);
+function sendThisShit(humanX, humanY) {
+    form.elements["form:x_hinput"].value = humanX.toFixed(2);
+    form.elements["form:y_hinput"].value = humanY.toFixed(2);
     form.elements["form:submitButton"].click();
 }
 
 function changeR(selectedR) {
-    const form = $("#form")[0];
     form.elements["form:r"].value = selectedR.textContent;
-    form.elements["form:submitButton"].click();
+    drawBase();
+    drawDots();
 }
 
