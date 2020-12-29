@@ -56,5 +56,17 @@
     #separateInput {
         width: 100%;
     }
+}
 
+.clock-wrap {
+    margin-top: 20vh;
+    text-align: center;
+}
+
+#clock {
+    font-size: 3.5rem;
+}
+
+.someShitLabel {
+    font-size: smaller;
 }

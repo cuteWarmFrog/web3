@@ -14,15 +14,15 @@ public class NodeDAO implements Serializable {
     public void addNode(Node node) {
         Connection connection = getConnection();
         try {
-            PreparedStatement pst = connection.prepareStatement("INSERT INTO \"nodes\"" +
-                    " VALUES(?, ?, ?, ?, ?, ?);");
+            PreparedStatement pst = connection.prepareStatement("INSERT INTO \"newnodes\" " +
+                    "(x, y, r, result, time)" +
+                    " VALUES(?, ?, ?, ?, ?);");
 
-            pst.setInt(1, node.getId());
-            pst.setDouble(2, node.getX());
-            pst.setDouble(3, node.getY());
-            pst.setDouble(4, node.getR());
-            pst.setBoolean(5, node.getResult());
-            pst.setString(6, node.getCreateTime().toString());
+            pst.setDouble(1, node.getX());
+            pst.setDouble(2, node.getY());
+            pst.setDouble(3, node.getR());
+            pst.setBoolean(4, node.getResult());
+            pst.setString(5, node.getCreateTime().toString());
             pst.execute();
             connection.close();
         } catch (SQLException e) {
@@ -34,7 +34,7 @@ public class NodeDAO implements Serializable {
         ResultSet rs = null;
         PreparedStatement pst = null;
         Connection connection = getConnection();
-        String stm = "Select * from \"nodes\";";
+        String stm = "Select * from \"newnodes\";";
         List<Node> records = new ArrayList<>();
 
         try {
@@ -44,7 +44,6 @@ public class NodeDAO implements Serializable {
 
             while(rs.next()) {
                 Node node = new Node();
-                node.setId(rs.getInt(1));
                 node.setX(rs.getDouble(2));
                 node.setY(rs.getDouble(3));
                 node.setR(rs.getDouble(4));
@@ -60,7 +59,7 @@ public class NodeDAO implements Serializable {
     }
 
     public Connection getConnection() {
-        boolean isLocal = true;
+        boolean isLocal = false;
         Connection con = null;
 
         String url;

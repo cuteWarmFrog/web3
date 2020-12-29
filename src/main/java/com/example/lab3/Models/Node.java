@@ -7,7 +7,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Node implements Serializable {
 
-    private int id;
     private Double x;
     private Double y;
     private Double r;
@@ -15,7 +14,6 @@ public class Node implements Serializable {
     private LocalDateTime createTime;
 
     public Node() {
-        this.id = ThreadLocalRandom.current().nextInt(1, 10000);
         this.createTime = LocalDateTime.now();
     }
 
@@ -36,14 +34,6 @@ public class Node implements Serializable {
     public String getCreateTimeFormatted() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy 'at' HH:mm:ss a");
         return createTime.format(formatter);
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public Double getX() {

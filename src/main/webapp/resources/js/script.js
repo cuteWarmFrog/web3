@@ -92,7 +92,11 @@ function getDots() {
         let y = td[1].textContent;
         let r = td[2].textContent;
         let result = td[3].textContent;
-        dots.push({x: x, y: y, r: r, result: result});
+        if(td == "" || x == "" || y == "" || r == "") {
+            console.log("Чел, что ты наделал?");
+        } else {
+            dots.push({x: x, y: y, r: r, result: result});
+        }
     })
     return dots;
 }
