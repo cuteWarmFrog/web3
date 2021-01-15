@@ -1,7 +1,9 @@
 package com.example.lab3.Models;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
-import com.example.lab3.Models.Node;
-import java.io.Serializable;
+import javax.annotation.Resource;
+import java.io.*;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,7 +11,16 @@ import java.util.List;
 
 public class NodeDAO implements Serializable {
 
-    public NodeDAO() {}
+    @Resource
+    private HikariDataSource ds;
+
+    public NodeDAO() {
+        HikariConfig config = new HikariConfig();
+        config.setUsername("user1");
+        config.setPassword("user1");
+        config.setJdbcUrl("jdbc:postgresql://localhost/testdb");
+        ds = new HikariDataSource(config);
+    }
 
     public void addNode(Node node) {
         Connection connection = getConnection();
@@ -59,6 +70,15 @@ public class NodeDAO implements Serializable {
     }
 
     public Connection getConnection() {
+        try {
+            return ds.getConnection();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public Connection getConnectionOld() {
         boolean isLocal = false;
         Connection con = null;
 
