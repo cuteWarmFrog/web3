@@ -2,7 +2,6 @@ package com.example.lab3.Models;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import javax.annotation.Resource;
 import java.io.*;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -11,8 +10,7 @@ import java.util.List;
 
 public class NodeDAO implements Serializable {
 
-    @Resource
-    private HikariDataSource ds;
+    public HikariDataSource ds;
 
     public NodeDAO() {
         HikariConfig config = new HikariConfig();
@@ -21,14 +19,15 @@ public class NodeDAO implements Serializable {
             Пожалуйста, не баньте за это. Я знаю, что это неправильно.
             Обещаю в некст лабе использовать датасурс.
         */
-        config.setUsername("s278069");
-        config.setPassword("keq816");
-        config.setJdbcUrl("jdbc:postgresql://pg:5432/studs");
+        config.setJdbcUrl(IAmAshamedForThisShit.heliosURL);
+        config.setUsername(IAmAshamedForThisShit.heliosUsername);
+        config.setPassword(IAmAshamedForThisShit.heliosPassword);
+
         ds = new HikariDataSource(config);
     }
 
     public void addNode(Node node) {
-        Connection connection = getConnection();
+        Connection connection = getConnectionOld();
         try {
             PreparedStatement pst = connection.prepareStatement("INSERT INTO \"newnodes\" " +
                     "(x, y, r, result, time)" +
@@ -49,7 +48,7 @@ public class NodeDAO implements Serializable {
     public List<Node> getNodes() {
         ResultSet rs = null;
         PreparedStatement pst = null;
-        Connection connection = getConnection();
+        Connection connection = getConnectionOld();
         String stm = "Select * from \"newnodes\";";
         List<Node> records = new ArrayList<>();
 
@@ -84,8 +83,8 @@ public class NodeDAO implements Serializable {
     }
 
 
-
-    public Connection getConnectionOld() {
+    @Deprecated
+    private Connection getConnectionOld() {
         boolean isLocal = false;
         Connection con = null;
 
