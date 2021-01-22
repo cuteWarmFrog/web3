@@ -2,6 +2,7 @@ package com.example.lab3.Models;
 
 import javax.annotation.ManagedBean;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.annotation.ManagedProperty;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 @SessionScoped
 public class NodeBean implements Serializable {
 
+    @ManagedProperty(value = "#{nodeDao}")
     private NodeDAO nodeDAO;
 
     private List<Node> nodes;

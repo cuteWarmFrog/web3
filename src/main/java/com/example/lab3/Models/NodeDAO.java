@@ -1,33 +1,54 @@
 package com.example.lab3.Models;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
+import javax.annotation.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import java.io.*;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
+@ManagedBean
+@Named("nodeDao")
+@ApplicationScoped
 public class NodeDAO implements Serializable {
 
-    public HikariDataSource ds;
+    /*
+     @Resource(lookup = "java:jboss/datasources/PostgresDS")
+     private DataSource ds;
+    */
+
+    private Connection connection;
 
     public NodeDAO() {
-        HikariConfig config = new HikariConfig();
-        /*
-            Я исправил 9 из 10 ваших замечений, сделал все вообще по кайфу
-            Пожалуйста, не баньте за это. Я знаю, что это неправильно.
-            Обещаю в некст лабе использовать датасурс.
-        */
-        config.setJdbcUrl(IAmAshamedForThisShit.heliosURL);
-        config.setUsername(IAmAshamedForThisShit.heliosUsername);
-        config.setPassword(IAmAshamedForThisShit.heliosPassword);
+        connect();
+    }
 
-        ds = new HikariDataSource(config);
+    private void connect() {
+        String url;
+        String user;
+        String password;
+        try {
+            Class.forName("org.postgresql.Driver");
+            Properties prop = new Properties();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("db.properties");
+            prop.load(inputStream);
+
+            url = prop.getProperty("db.url");
+            user = prop.getProperty("db.username");
+            password = prop.getProperty("db.password");
+
+            connection = DriverManager.getConnection(url, user, password);
+
+        } catch (ClassNotFoundException | SQLException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addNode(Node node) {
-        Connection connection = getConnectionOld();
+        connect();
         try {
             PreparedStatement pst = connection.prepareStatement("INSERT INTO \"newnodes\" " +
                     "(x, y, r, result, time)" +
@@ -39,16 +60,14 @@ public class NodeDAO implements Serializable {
             pst.setBoolean(4, node.getResult());
             pst.setString(5, node.getCreateTime().toString());
             pst.execute();
-            connection.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
     public List<Node> getNodes() {
-        ResultSet rs = null;
-        PreparedStatement pst = null;
-        Connection connection = getConnectionOld();
+        ResultSet rs;
+        PreparedStatement pst;
         String stm = "Select * from \"newnodes\";";
         List<Node> records = new ArrayList<>();
 
@@ -65,51 +84,10 @@ public class NodeDAO implements Serializable {
                 node.setResult(rs.getBoolean(5));
                 node.setCreateTime(LocalDateTime.parse(rs.getString(6)));
                 records.add(node);
-                connection.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return records;
-    }
-
-    public Connection getConnection() {
-        try {
-            return ds.getConnection();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-
-    @Deprecated
-    private Connection getConnectionOld() {
-        boolean isLocal = false;
-        Connection con = null;
-
-        String url;
-        String user;
-        String password;
-
-        if(isLocal) {
-            url = "jdbc:postgresql://localhost/testdb";
-            user = "user1";
-            password = "user1";
-        } else {
-            url = "jdbc:postgresql://pg:5432/studs";
-            user = "s278069";
-            password = "keq816";
-        }
-
-        try {
-            Class.forName("org.postgresql.Driver");
-            con = DriverManager.getConnection(url, user, password);
-            System.out.println("Connection completed.");
-        } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println(ex.getMessage());
-        }
-
-        return con;
     }
 }
