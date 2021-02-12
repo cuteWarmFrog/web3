@@ -3,6 +3,10 @@ package com.example.lab3.Models;
 import javax.annotation.ManagedBean;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.*;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -15,18 +19,25 @@ import java.util.Properties;
 @ApplicationScoped
 public class NodeDAO implements Serializable {
 
-    /*
-     @Resource(lookup = "java:jboss/datasources/PostgresDS")
-     private DataSource ds;
-    */
-
+    private DataSource ds;
     private Connection connection;
 
     public NodeDAO() {
-        connect();
+
+        connectWithDS();
     }
 
-    private void connect() {
+    private void connectWithDS() {
+        try {
+            Context ctx = new InitialContext();
+            DataSource ds = (DataSource)ctx.lookup("java:jboss/datasources/PostgresDS");
+            connection = ds.getConnection();
+        } catch (SQLException | NamingException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    private void connectWithProps() {
         String url;
         String user;
         String password;
@@ -48,7 +59,7 @@ public class NodeDAO implements Serializable {
     }
 
     public void addNode(Node node) {
-        connect();
+        connectWithProps();
         try {
             PreparedStatement pst = connection.prepareStatement("INSERT INTO \"newnodes\" " +
                     "(x, y, r, result, time)" +
